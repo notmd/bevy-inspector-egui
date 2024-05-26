@@ -40,10 +40,11 @@ use std::any::TypeId;
 
 use bevy_asset::{Asset, AssetServer, Assets, ReflectAsset, UntypedAssetId};
 use bevy_ecs::query::{QueryFilter, WorldQuery};
-use bevy_ecs::system::CommandQueue;
+use bevy_ecs::world::CommandQueue;
 use bevy_ecs::{component::ComponentId, prelude::*};
 use bevy_hierarchy::{Children, Parent};
 use bevy_reflect::{Reflect, TypeRegistry};
+use bevy_state::state::{FreelyMutableState, NextState, State, States};
 use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
 use pretty_type_name::pretty_type_name;
@@ -203,7 +204,7 @@ pub fn ui_for_assets<A: Asset + Reflect>(world: &mut World, ui: &mut egui::Ui) {
 }
 
 /// Display state `T` and change state on edit
-pub fn ui_for_state<T: States + Reflect>(world: &mut World, ui: &mut egui::Ui) {
+pub fn ui_for_state<T: FreelyMutableState + Reflect>(world: &mut World, ui: &mut egui::Ui) {
     let type_registry = world.resource::<AppTypeRegistry>().0.clone();
     let type_registry = type_registry.read();
 
@@ -230,7 +231,7 @@ pub fn ui_for_state<T: States + Reflect>(world: &mut World, ui: &mut egui::Ui) {
     let changed = env.ui_for_reflect(&mut current, ui);
 
     if changed {
-        next_state.0 = Some(current);
+        next_state.set(current);
     }
     queue.apply(world);
 }
@@ -675,7 +676,7 @@ pub mod by_type_id {
     use std::any::TypeId;
 
     use bevy_asset::{AssetServer, ReflectAsset, ReflectHandle, UntypedAssetId, UntypedHandle};
-    use bevy_ecs::{prelude::*, system::CommandQueue};
+    use bevy_ecs::{prelude::*, world::CommandQueue};
     use bevy_reflect::TypeRegistry;
 
     use crate::{

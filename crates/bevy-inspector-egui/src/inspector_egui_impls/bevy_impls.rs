@@ -1,8 +1,8 @@
 use bevy_asset::{Assets, Handle};
 use bevy_ecs::world::World;
-use bevy_ecs::{entity::Entity, system::CommandQueue};
+use bevy_ecs::{entity::Entity, world::CommandQueue};
 use bevy_render::mesh::Mesh;
-use bevy_render::{color::Color, view::RenderLayers};
+use bevy_render::view::RenderLayers;
 use egui::{ecolor::Hsva, Color32};
 use std::any::Any;
 
@@ -182,86 +182,86 @@ fn mesh_ui_inner(mesh: &Mesh, ui: &mut egui::Ui) {
     });
 }
 
-impl InspectorPrimitive for Color {
-    fn ui(&mut self, ui: &mut egui::Ui, _: &dyn Any, _: egui::Id, _: InspectorUi<'_, '_>) -> bool {
-        match self {
-            Color::Rgba {
-                red,
-                green,
-                blue,
-                alpha,
-            } => {
-                let mut color = Color32::from_rgba_premultiplied(
-                    (*red * 255.) as u8,
-                    (*green * 255.) as u8,
-                    (*blue * 255.) as u8,
-                    (*alpha * 255.) as u8,
-                );
-                if ui.color_edit_button_srgba(&mut color).changed() {
-                    let [r, g, b, a] = color.to_array();
-                    *red = r as f32 / 255.;
-                    *green = g as f32 / 255.;
-                    *blue = b as f32 / 255.;
-                    *alpha = a as f32 / 255.;
-                    return true;
-                }
-            }
-            Color::RgbaLinear {
-                red,
-                green,
-                blue,
-                alpha,
-            } => {
-                let mut color = [*red, *green, *blue, *alpha];
-                if ui
-                    .color_edit_button_rgba_premultiplied(&mut color)
-                    .changed()
-                {
-                    *red = color[0];
-                    *green = color[1];
-                    *blue = color[2];
-                    *alpha = color[3];
-                    return true;
-                }
-            }
-            Color::Hsla {
-                hue,
-                saturation,
-                lightness,
-                alpha,
-            } => {
-                let mut hsva = Hsva::new(*hue, *saturation, *lightness, *alpha);
-                if ui.color_edit_button_hsva(&mut hsva).changed() {
-                    *hue = hsva.h;
-                    *saturation = hsva.s;
-                    *lightness = hsva.v;
-                    *alpha = hsva.a;
-                    return true;
-                }
-            }
-            Color::Lcha { .. } => {
-                let [hue, saturation, lightness, alpha] = self.as_hsla_f32();
-                let mut hsva = Hsva::new(hue, saturation, lightness, alpha);
-                if ui.color_edit_button_hsva(&mut hsva).changed() {
-                    *self = Color::hsla(hue, saturation, lightness, alpha).as_lcha();
-                    return true;
-                }
-            }
-        }
-        false
-    }
+// impl InspectorPrimitive for Color {
+//     fn ui(&mut self, ui: &mut egui::Ui, _: &dyn Any, _: egui::Id, _: InspectorUi<'_, '_>) -> bool {
+//         match self {
+//             Color::Rgba {
+//                 red,
+//                 green,
+//                 blue,
+//                 alpha,
+//             } => {
+//                 let mut color = Color32::from_rgba_premultiplied(
+//                     (*red * 255.) as u8,
+//                     (*green * 255.) as u8,
+//                     (*blue * 255.) as u8,
+//                     (*alpha * 255.) as u8,
+//                 );
+//                 if ui.color_edit_button_srgba(&mut color).changed() {
+//                     let [r, g, b, a] = color.to_array();
+//                     *red = r as f32 / 255.;
+//                     *green = g as f32 / 255.;
+//                     *blue = b as f32 / 255.;
+//                     *alpha = a as f32 / 255.;
+//                     return true;
+//                 }
+//             }
+//             Color::RgbaLinear {
+//                 red,
+//                 green,
+//                 blue,
+//                 alpha,
+//             } => {
+//                 let mut color = [*red, *green, *blue, *alpha];
+//                 if ui
+//                     .color_edit_button_rgba_premultiplied(&mut color)
+//                     .changed()
+//                 {
+//                     *red = color[0];
+//                     *green = color[1];
+//                     *blue = color[2];
+//                     *alpha = color[3];
+//                     return true;
+//                 }
+//             }
+//             Color::Hsla {
+//                 hue,
+//                 saturation,
+//                 lightness,
+//                 alpha,
+//             } => {
+//                 let mut hsva = Hsva::new(*hue, *saturation, *lightness, *alpha);
+//                 if ui.color_edit_button_hsva(&mut hsva).changed() {
+//                     *hue = hsva.h;
+//                     *saturation = hsva.s;
+//                     *lightness = hsva.v;
+//                     *alpha = hsva.a;
+//                     return true;
+//                 }
+//             }
+//             Color::Lcha { .. } => {
+//                 let [hue, saturation, lightness, alpha] = self.as_hsla_f32();
+//                 let mut hsva = Hsva::new(hue, saturation, lightness, alpha);
+//                 if ui.color_edit_button_hsva(&mut hsva).changed() {
+//                     *self = Color::hsla(hue, saturation, lightness, alpha).as_lcha();
+//                     return true;
+//                 }
+//             }
+//         }
+//         false
+//     }
 
-    fn ui_readonly(
-        &self,
-        ui: &mut egui::Ui,
-        options: &dyn Any,
-        id: egui::Id,
-        env: InspectorUi<'_, '_>,
-    ) {
-        let mut copy = *self;
-        ui.add_enabled_ui(false, |ui| copy.ui(ui, options, id, env));
-    }
-}
+//     fn ui_readonly(
+//         &self,
+//         ui: &mut egui::Ui,
+//         options: &dyn Any,
+//         id: egui::Id,
+//         env: InspectorUi<'_, '_>,
+//     ) {
+//         let mut copy = *self;
+//         ui.add_enabled_ui(false, |ui| copy.ui(ui, options, id, env));
+//     }
+// }
 
 impl InspectorPrimitive for RenderLayers {
     fn ui(&mut self, ui: &mut egui::Ui, _: &dyn Any, id: egui::Id, _: InspectorUi<'_, '_>) -> bool {
@@ -271,16 +271,15 @@ impl InspectorPrimitive for RenderLayers {
                 let mut layer_copy = layer;
                 if ui
                     .add(
-                        egui::DragValue::new(&mut layer_copy)
-                            .clamp_range(0..=RenderLayers::TOTAL_LAYERS - 1),
+                        egui::DragValue::new(&mut layer_copy), // .clamp_range(0..=RenderLayers::TOTAL_LAYERS - 1),
                     )
                     .changed()
                 {
-                    new_value = Some(self.without(layer).with(layer_copy));
+                    new_value = Some(self.clone().without(layer).with(layer_copy));
                 }
 
                 if ui.button("-").clicked() {
-                    new_value = Some(self.without(layer));
+                    new_value = Some(self.clone().without(layer));
                 }
                 ui.end_row();
             }
@@ -289,7 +288,7 @@ impl InspectorPrimitive for RenderLayers {
         ui.horizontal(|ui| {
             if ui.button("Add").clicked() {
                 let new_layer = self.iter().last().map_or(0, |last| last + 1);
-                new_value = Some(self.with(new_layer));
+                new_value = Some(self.clone().with(new_layer));
             }
         });
 

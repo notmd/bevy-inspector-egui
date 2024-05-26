@@ -7,7 +7,7 @@ use image::{DynamicImage, ImageBuffer};
 
 /// Converts a [`DynamicImage`] to an [`Image`].
 pub fn from_dynamic(dyn_img: DynamicImage, is_srgb: bool) -> Image {
-    use bevy_core::cast_slice;
+    use bytemuck::cast_slice;
     let width;
     let height;
 

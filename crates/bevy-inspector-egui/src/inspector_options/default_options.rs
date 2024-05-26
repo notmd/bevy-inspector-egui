@@ -63,23 +63,23 @@ fn insert_options_enum<T: 'static>(
 }
 
 pub fn register_default_options(type_registry: &mut TypeRegistry) {
-    insert_options_enum::<bevy_render::color::Color>(
-        type_registry,
-        &[
-            ("Rgba", "red", &NumberOptions::<f32>::normalized()),
-            ("Rgba", "green", &NumberOptions::<f32>::normalized()),
-            ("Rgba", "blue", &NumberOptions::<f32>::normalized()),
-            ("Rgba", "alpha", &NumberOptions::<f32>::normalized()),
-            ("RgbaLinear", "red", &NumberOptions::<f32>::normalized()),
-            ("RgbaLinear", "green", &NumberOptions::<f32>::normalized()),
-            ("RgbaLinear", "blue", &NumberOptions::<f32>::normalized()),
-            ("RgbaLinear", "alpha", &NumberOptions::<f32>::normalized()),
-            ("Hsla", "hue", &NumberOptions::<f32>::between(0.0, 360.0)),
-            ("Hsla", "saturation", &NumberOptions::<f32>::normalized()),
-            ("Hsla", "lightness", &NumberOptions::<f32>::normalized()),
-            ("Hsla", "alpha", &NumberOptions::<f32>::normalized()),
-        ],
-    );
+    // insert_options_enum::<bevy_render::color::Color>(
+    //     type_registry,
+    //     &[
+    //         ("Rgba", "red", &NumberOptions::<f32>::normalized()),
+    //         ("Rgba", "green", &NumberOptions::<f32>::normalized()),
+    //         ("Rgba", "blue", &NumberOptions::<f32>::normalized()),
+    //         ("Rgba", "alpha", &NumberOptions::<f32>::normalized()),
+    //         ("RgbaLinear", "red", &NumberOptions::<f32>::normalized()),
+    //         ("RgbaLinear", "green", &NumberOptions::<f32>::normalized()),
+    //         ("RgbaLinear", "blue", &NumberOptions::<f32>::normalized()),
+    //         ("RgbaLinear", "alpha", &NumberOptions::<f32>::normalized()),
+    //         ("Hsla", "hue", &NumberOptions::<f32>::between(0.0, 360.0)),
+    //         ("Hsla", "saturation", &NumberOptions::<f32>::normalized()),
+    //         ("Hsla", "lightness", &NumberOptions::<f32>::normalized()),
+    //         ("Hsla", "alpha", &NumberOptions::<f32>::normalized()),
+    //     ],
+    // );
 
     insert_options_struct::<bevy_render::view::ColorGrading>(
         type_registry,
